@@ -1,22 +1,21 @@
 package com.petstore.apitests;
 
-import static org.junit.Assert.assertTrue;
-import org.junit.Test;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
-public class PetApiTests extends BaseTest{
+public class PetApiTests extends BaseTest {
 
     private static final int PET_ID = 12345; // Random Pet ID
-    private static final String PET_JSON = 
-        "{ \"id\": " + PET_ID + ", \"name\": \"Doggie\", \"status\": \"available\" }";
+    private static final String PET_JSON = "{ \"id\": " + PET_ID + ", \"name\": \"Doggie\", \"status\": \"available\" }";
 
-    // (C)reate
+    // #region POSITIVE TESTS
+    
+    // (C)reate - Crud
+    // POST
     @Test
     public void createPet() {
         Response response = RestAssured.given()
@@ -26,11 +25,11 @@ public class PetApiTests extends BaseTest{
                 .post();
 
         Assert.assertEquals(response.getStatusCode(), 200);
-        Assert.assertTrue(response.getBody().asString().
-            contains("Doggie"), "Pet name should be in the response");
+        Assert.assertTrue(response.getBody().asString().contains("Doggie"), "Pet name should be in the response");
     }
 
-    // (R)ead
+    // (R)ead - cRud
+    // GET
     @Test(dependsOnMethods = "createPet")
     public void readPet() {
         Response response = RestAssured.given()
@@ -39,15 +38,14 @@ public class PetApiTests extends BaseTest{
                 .get("{petId}");
 
         Assert.assertEquals(response.getStatusCode(), 200);
-        Assert.assertTrue(response.getBody().asString().
-            contains("Doggie"), "Pet name should match");
+        Assert.assertTrue(response.getBody().asString().contains("Doggie"), "Pet name should match");
     }
 
-    // (U)pdate
+    // (U)pdate - crUd
+    // PUT
     @Test(dependsOnMethods = "readPet")
     public void updatePet() {
-        String updatedPetJson = 
-            "{ \"id\": " + PET_ID + ", \"name\": \"UpdatedDoggie\", \"status\": \"available\" }";
+        String updatedPetJson = "{ \"id\": " + PET_ID + ", \"name\": \"UpdatedDoggie\", \"status\": \"available\" }";
 
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
@@ -60,7 +58,8 @@ public class PetApiTests extends BaseTest{
                 "Updated pet name should be in the response");
     }
 
-    // (D)elete
+    // (D)elete - cruD
+    // DELETE
     @Test(dependsOnMethods = "updatePet")
     public void deletePet() {
         Response response = RestAssured.given()
@@ -71,8 +70,13 @@ public class PetApiTests extends BaseTest{
         Assert.assertEquals(response.getStatusCode(), 200);
     }
 
-    // try accessing now deleted pet
-    @Test
+    // #endregion
+
+
+    // #region NEGATIVE TESTS
+
+    // Try accessing nonexistent (in this case, now deleted) pet
+    @Test(dependsOnMethods = "deletePet")
     public void readNonExistentPet() {
         Response response = RestAssured.given()
                 .pathParam("petId", PET_ID)
@@ -81,4 +85,20 @@ public class PetApiTests extends BaseTest{
 
         Assert.assertEquals(response.getStatusCode(), 404, "Should return 404 for non-existent pet");
     }
+
+    // Try to create a new pet without a name
+    @Test
+    public void createPetWithoutName() {
+        String petJson = "{ \"id\": 1, \"name\": null, \"status\": \"available\" }"; // Adjusted to raw JSON
+
+        Response response = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(petJson)
+                .when()
+                .post();
+
+        Assert.assertEquals(response.getStatusCode(), 400, "Expecting Bad Request when name is null");
+    }
+
+    // #endregion
 }
