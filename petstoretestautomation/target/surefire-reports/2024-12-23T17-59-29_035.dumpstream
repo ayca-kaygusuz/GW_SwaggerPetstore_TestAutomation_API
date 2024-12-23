@@ -1,4 +1,0 @@
-# Created at 2024-12-23T17:59:29.553
-Boot Manifest-JAR contains absolute paths in classpath 'D:\Repositories\GW_SwaggerPetstore_TestAutomation_API\petstoretestautomation\target\test-classes'
-Hint: <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
-
