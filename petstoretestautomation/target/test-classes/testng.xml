@@ -1,0 +1,8 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Swagger Petstore API Tests">
+    <test name="Pet API Tests">
+        <classes>
+            <class>com.petstore.apitests.PetApiTests</class>
+        </classes>
+    </test>
+</suite>
