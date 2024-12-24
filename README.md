@@ -4,27 +4,6 @@
 ## Overview
 This project contains automated tests for the Pet Store API using Java, TestNG, and RestAssured. It aims to verify the CRUD operations of pets in the Pet Store.
 
-## File Structure
-
-GW_SwaggerPetstore_TestAutomation_API
-└── .vscode
-└── petstoretestautomation
-    ├── pom.xml
-    └── src
-        └── test
-            └── java
-                └── com
-                    └── petstore
-                        └── apitests
-                        ├── BaseTest.java
-                        └── PetApiTests.java
-                └── resources
-                └── testng.xml
-            └── target
-            └── pom.xml
-└── LICENSE
-└── README.md
-
 ## Prerequisites
 - Java 21
 - Maven
